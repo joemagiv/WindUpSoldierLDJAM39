@@ -36,7 +36,7 @@ public class Winder : MonoBehaviour {
 
     public void detectMouseover()
     {
-        Debug.Log("Detected Mouseover");
+        //Debug.Log("Detected Mouseover");
     }
 
     public void IncreaseMovementEnergy()

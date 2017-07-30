@@ -84,8 +84,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\CameraScript.cs" />
+    <Compile Include="Assets\Enemy.cs" />
+    <Compile Include="Assets\EnemyBody.cs" />
     <Compile Include="Assets\MainCharacter.cs" />
     <Compile Include="Assets\Missile.cs" />
+    <Compile Include="Assets\Shredder.cs" />
     <Compile Include="Assets\Winder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

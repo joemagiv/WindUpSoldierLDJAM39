@@ -26,6 +26,8 @@ public class MainCharacter : MonoBehaviour {
     public float jumpEnergy;
     public float weaponsEnergy;
 
+    public int health;
+    public Transform healthBarTransform;
 
 
 	// Use this for initialization
@@ -104,6 +106,8 @@ public class MainCharacter : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
+        healthBarTransform.localScale = new Vector3(health / 100f, 1f, 1f);
+
         if (Input.GetAxis("Horizontal") > 0)
         {
             if (movementEnergy > 0)
@@ -153,6 +157,8 @@ public class MainCharacter : MonoBehaviour {
 
 
     }
+
+    
 		
 	
 }
