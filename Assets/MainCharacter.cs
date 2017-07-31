@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class MainCharacter : MonoBehaviour {
 
+    public bool isAlive;
+
     private Rigidbody2D rb;
 
     public Animator treadsAnimator;
     public Animator torsoAnimator;
 
     public bool isJumping;
-
-    public float currentXvelocity;
-    public float currentYvelocity;
 
     public float maxXvelocity;
 
@@ -29,11 +28,23 @@ public class MainCharacter : MonoBehaviour {
     public int health;
     public Transform healthBarTransform;
 
+    public SpriteRenderer spriteRenderer;
+    public Sprite explosionSprite;
+
+    private GameController gameController;
+
+    private SoundManager soundManager;
+    public AudioClip errorSound;
+    public AudioClip explosionSound;
+    public AudioClip pewSound;
+    public AudioClip jumpSound;
 
 	// Use this for initialization
 	void Start () {
         rb = GetComponent<Rigidbody2D>();
-	}
+        gameController = FindObjectOfType<GameController>().GetComponent<GameController>();
+        soundManager = FindObjectOfType<SoundManager>().GetComponent<SoundManager>();
+    }
 
     private void moveToRight()
     {
@@ -66,6 +77,7 @@ public class MainCharacter : MonoBehaviour {
             jumpEnergy = 0;
         }
         rb.AddForceAtPosition(new Vector2(0, jumpHeight),transform.position, ForceMode2D.Impulse);
+        soundManager.PlaySound(jumpSound);
 
     }
 
@@ -80,6 +92,7 @@ public class MainCharacter : MonoBehaviour {
         torsoAnimator.SetTrigger("Fire");
         GameObject missile = Instantiate(missilePrefab, gun.transform.position, Quaternion.identity, missilesParent);
         Missile missileScript = missile.GetComponent<Missile>();
+        soundManager.PlaySound(pewSound);
         if (transform.localScale.x == 1)
         {
             missileScript.headedRight = true;
@@ -104,6 +117,21 @@ public class MainCharacter : MonoBehaviour {
 
     }
 
+    private void killPlayer()
+    {
+        torsoAnimator.enabled = false;
+        spriteRenderer.sprite = explosionSprite;
+        gameController.PlayerKilled();
+    }
+
+    private void playErrorSound()
+    {
+        if (!soundManager.isPlaying)
+        {
+            soundManager.PlaySound(errorSound);
+        }
+    }
+
     // Update is called once per frame
     void Update () {
         healthBarTransform.localScale = new Vector3(health / 100f, 1f, 1f);
@@ -113,6 +141,9 @@ public class MainCharacter : MonoBehaviour {
             if (movementEnergy > 0)
             {
                 moveToRight();
+            } else
+            {
+                playErrorSound();
             }
         }
         if (Input.GetAxis("Horizontal") < 0)
@@ -120,6 +151,9 @@ public class MainCharacter : MonoBehaviour {
             if (movementEnergy > 0)
             {
                 moveToLeft();
+            } else
+            {
+                playErrorSound();
             }
         }
 
@@ -136,6 +170,10 @@ public class MainCharacter : MonoBehaviour {
                 {
                     jump();
                 }
+                else
+                {
+                    playErrorSound();
+                }
             }
         }
 
@@ -144,6 +182,11 @@ public class MainCharacter : MonoBehaviour {
             if (weaponsEnergy > 0)
             {
                 fireGun();
+                
+            }
+            else
+            {
+                playErrorSound();
             }
         }
 
@@ -152,10 +195,15 @@ public class MainCharacter : MonoBehaviour {
          //   isJumping = false;
         }
 
-        currentXvelocity = rb.velocity.x;
-        currentYvelocity = rb.velocity.y;
 
-
+        if (isAlive)
+        {
+            if (health <= 0)
+            {
+                isAlive = false;
+                killPlayer();
+            }
+        }
     }
 
     

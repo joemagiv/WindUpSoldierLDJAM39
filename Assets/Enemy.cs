@@ -17,6 +17,10 @@ public class Enemy : MonoBehaviour {
 
     public GameObject missileHitGameObject;
 
+    private SoundManager soundManager;
+    public AudioClip explosionSound;
+
+
     public float moveSpeed;
 
 	// Use this for initialization
@@ -24,22 +28,28 @@ public class Enemy : MonoBehaviour {
         enemyAnim = GetComponent<Animator>();
         mainCharacterTransform = FindObjectOfType<MainCharacter>().GetComponent<Transform>();
         mainCharacter = FindObjectOfType<MainCharacter>().GetComponent<MainCharacter>();
+        soundManager = FindObjectOfType<SoundManager>().GetComponent<SoundManager>();
     }
 
 
     public void bodyHit(GameObject collision)
     {
-        Debug.Log("trigger detected: " + collision.gameObject.name);
+        //Debug.Log("trigger detected: " + collision.gameObject.name);
         if (collision.GetComponent<Missile>())
         {
+            enemyAnim.applyRootMotion = true;
             missileHitGameObject = collision;
+            Missile missileScript = missileHitGameObject.GetComponent<Missile>();
+            missileScript.missileHit();
             enemyAnim.SetTrigger("IsHit");
+            soundManager.PlaySound(explosionSound);
         }
 
         if (collision.GetComponent<MainCharacter>())
         {
             enemyAnim.SetTrigger("IsHit");
             mainCharacter.health -= 10;
+            soundManager.PlaySound(explosionSound);
         }
     }
 
@@ -56,6 +66,8 @@ public class Enemy : MonoBehaviour {
         if (distanceBetweenEnemyMainCharacter < 3)
         {
             isAttacking = true;
+            enemyAnim.SetBool("IdleFlying", false);
+            enemyAnim.applyRootMotion = true;
 
         }
 
@@ -63,8 +75,6 @@ public class Enemy : MonoBehaviour {
         {
             
             float step = moveSpeed * Time.deltaTime;
-            enemyAnim.SetBool("IsAttacking", true);
-            enemyAnim.applyRootMotion = true;
             transform.position = Vector3.MoveTowards(transform.position, mainCharacterTransform.position, step);
         }
 	}

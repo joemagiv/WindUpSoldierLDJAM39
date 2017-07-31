@@ -28,10 +28,15 @@ public class Winder : MonoBehaviour {
 
     public float energyDecay;
 
+    public AudioClip[] turningSounds;
+
+    private SoundManager soundManager;
+
 
 	// Use this for initialization
 	void Start () {
         mainCharacter = FindObjectOfType<MainCharacter>().GetComponent<MainCharacter>();
+        soundManager = FindObjectOfType<SoundManager>().GetComponent<SoundManager>();
 	}
 
     public void detectMouseover()
@@ -54,6 +59,7 @@ public class Winder : MonoBehaviour {
             keyImage.sprite = keySpriteTurning;
             currentKeyRotation += 40;
             winderKey.transform.rotation = Quaternion.Euler(0, 0, currentKeyRotation);
+            soundManager.PlaySound(turningSounds[Random.Range(0,turningSounds.Length)]);
         }
     }
 
@@ -74,6 +80,7 @@ public class Winder : MonoBehaviour {
             keyImage.sprite = keySpriteTurning;
             currentKeyRotation += 40;
             winderKey.transform.rotation = Quaternion.Euler(0, 0, currentKeyRotation);
+            soundManager.PlaySound(turningSounds[Random.Range(0, turningSounds.Length)]);
         }
     }
 
@@ -94,6 +101,7 @@ public class Winder : MonoBehaviour {
             keyImage.sprite = keySpriteTurning;
             currentKeyRotation += 40;
             winderKey.transform.rotation = Quaternion.Euler(0, 0, currentKeyRotation);
+            soundManager.PlaySound(turningSounds[Random.Range(0, turningSounds.Length)]);
         }
     }
 
